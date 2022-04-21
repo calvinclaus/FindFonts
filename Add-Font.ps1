@@ -45,7 +45,7 @@
 # Declare Parameters
 #*******************************************************************
 param(
-    [string] $path = "",
+    [string[]] $pathList = @(),
     [switch] $help = $false
 )
 
@@ -545,6 +545,8 @@ function Process-Arguments()
         break
     }
 
+		
+  foreach ($path in $pathList) {
     if ((Test-Path $path -PathType Leaf) -eq $true)
     {
         If ($hashFontFileTypes.ContainsKey((Get-Item $path).Extension))
@@ -553,10 +555,6 @@ function Process-Arguments()
             if ($retVal -ne 0)
             {
                 exit 1
-            }
-            else
-            {
-                exit 0
             }
         }
         else
@@ -591,10 +589,6 @@ function Process-Arguments()
         { 
             exit 1 
         }
-        else
-        {
-            exit 0
-        }
     }
     else
     {
@@ -602,6 +596,7 @@ function Process-Arguments()
         ""
         exit 1
     }
+	}
 }
 
 
@@ -611,4 +606,3 @@ function Process-Arguments()
 
 $fontsFolderPath = Get-SpecialFolder($CSIDL_FONTS)
 Process-Arguments
-
