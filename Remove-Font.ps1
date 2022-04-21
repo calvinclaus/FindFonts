@@ -47,7 +47,7 @@
 # Declare Parameters
 #*******************************************************************
 param(
-    [string] $file = "",
+    [string[]]$fileList = @(),
     [switch] $help = $false
 )
 
@@ -578,34 +578,33 @@ function Process-Arguments()
         break
     }
 
-    $fontFilePath = Join-Path $fontsFolderPath $file
-    if ((Test-Path $fontFilePath -PathType Leaf) -eq $true)
-    {
-        If ($hashFontFileTypes.ContainsKey((Get-Item $fontFilePath).Extension))
-        {
-            $retVal = Remove-SingleFont $file
-            if ($retVal -ne 0)
-            {
-                exit 1
-            }
-            else
-            {
-                exit 0
-            }
-        }
-        else
-        {
-            "`'$($fontFilePath)`' not a valid font file type"
-            ""
-            exit 1
-        }
-    }
-    else
-    {
-        "`'$($fontFilePath)`' not found"
-        ""
-        exit 1
-    }
+    foreach ($file in $fileList) {
+      $fontFilePath = Join-Path $fontsFolderPath $file
+      if ((Test-Path $fontFilePath -PathType Leaf) -eq $true)
+      {
+          If ($hashFontFileTypes.ContainsKey((Get-Item $fontFilePath).Extension))
+          {
+              $retVal = Remove-SingleFont $file
+              if ($retVal -ne 0)
+              {
+                  exit 1
+              }
+          }
+          else
+          {
+              "`'$($fontFilePath)`' not a valid font file type"
+              ""
+              exit 1
+          }
+      }
+      else
+      {
+          "`'$($fontFilePath)`' not found"
+          ""
+          exit 1
+      }
+		}
+	exit 0
 }
 
 
@@ -615,4 +614,3 @@ function Process-Arguments()
 
 $fontsFolderPath = Get-SpecialFolder($CSIDL_FONTS)
 Process-Arguments
-
