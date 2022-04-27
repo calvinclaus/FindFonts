@@ -587,7 +587,8 @@ function Process-Arguments()
               $retVal = Remove-SingleFont $file
               if ($retVal -ne 0)
               {
-                  exit 1
+                  "removal failed but continuing anyway"
+                  ## exit 1
               }
           }
           else
